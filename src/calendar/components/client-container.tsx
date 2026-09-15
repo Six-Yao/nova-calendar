@@ -21,7 +21,7 @@ interface IProps {
 }
 
 export function ClientContainer({ view }: IProps) {
-  const { selectedDate, selectedUserId, events } = useCalendar();
+  const { selectedDate, selectedUserIds, events } = useCalendar();
 
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
@@ -32,7 +32,7 @@ export function ClientContainer({ view }: IProps) {
         const yearStart = new Date(selectedDate.getFullYear(), 0, 1);
         const yearEnd = new Date(selectedDate.getFullYear(), 11, 31, 23, 59, 59, 999);
         const isInSelectedYear = eventStartDate <= yearEnd && eventEndDate >= yearStart;
-        const isUserMatch = event.user.id === selectedUserId;
+        const isUserMatch = selectedUserIds.includes(event.user.id);
         return isInSelectedYear && isUserMatch;
       }
 
@@ -40,7 +40,7 @@ export function ClientContainer({ view }: IProps) {
         const monthStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
         const monthEnd = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0, 23, 59, 59, 999);
         const isInSelectedMonth = eventStartDate <= monthEnd && eventEndDate >= monthStart;
-        const isUserMatch = event.user.id === selectedUserId;
+        const isUserMatch = selectedUserIds.includes(event.user.id);
         return isInSelectedMonth && isUserMatch;
       }
 
@@ -56,7 +56,7 @@ export function ClientContainer({ view }: IProps) {
         weekEnd.setHours(23, 59, 59, 999);
 
         const isInSelectedWeek = eventStartDate <= weekEnd && eventEndDate >= weekStart;
-        const isUserMatch = event.user.id === selectedUserId;
+        const isUserMatch = selectedUserIds.includes(event.user.id);
         return isInSelectedWeek && isUserMatch;
       }
 
@@ -64,11 +64,11 @@ export function ClientContainer({ view }: IProps) {
         const dayStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 0, 0, 0);
         const dayEnd = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 23, 59, 59);
         const isInSelectedDay = eventStartDate <= dayEnd && eventEndDate >= dayStart;
-        const isUserMatch = event.user.id === selectedUserId;
+        const isUserMatch = selectedUserIds.includes(event.user.id);
         return isInSelectedDay && isUserMatch;
       }
     });
-  }, [selectedDate, selectedUserId, events, view]);
+  }, [selectedDate, selectedUserIds, events, view]);
 
   const singleDayEvents = filteredEvents.filter(event => {
     const startDate = parseISO(event.startDate);
