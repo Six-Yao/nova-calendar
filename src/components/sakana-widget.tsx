@@ -43,13 +43,17 @@ export default function SakanaWidgetBox() {
 
   useEffect(() => {
     if (!mounted || !containerRef.current) return;
+    type SakanaWidgetInstance = {
+      mount: (el: HTMLElement | string) => void;
+      unmount: () => void;
+    };
 
-    let widget: any = null;
+    let widget: SakanaWidgetInstance | null = null;
 
     import('sakana-widget').then(({ default: SakanaWidget }) => {
       CHARACTER_IMAGES.forEach((file, index) => {
         const name = file.replace(/\.webp$/i, '');
-        const character = SakanaWidget.getCharacter('chisato');
+        const character = SakanaWidget.getCharacter('chisato')!;
         character.image = `/assets/${file}`;
         SakanaWidget.registerCharacter(name, character);
       });
