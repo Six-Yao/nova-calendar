@@ -4,7 +4,7 @@ const nextConfig = {
   redirects: async () => [
     {
       source: "/",
-      destination: "/month-view",
+      destination: "/week-view",
       permanent: false,
     },
   ],
