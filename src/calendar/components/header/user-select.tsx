@@ -10,7 +10,9 @@ export function UserSelect() {
   const { users, selectedUserIds, setSelectedUserIds } = useCalendar();
   const [searchQuery, setSearchQuery] = useState("");
   const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
-  const filteredUsers = users.filter(user => user.name.toLocaleLowerCase().includes(normalizedQuery));
+  const filteredUsers = users
+    .filter(user => user.name.toLocaleLowerCase().includes(normalizedQuery))
+    .sort((firstUser, secondUser) => Number(selectedUserIds.includes(secondUser.id)) - Number(selectedUserIds.includes(firstUser.id)));
   const selectedUserNames = users.filter(user => selectedUserIds.includes(user.id)).map(user => user.name);
 
   const toggleUser = (userId: string) => {
