@@ -1,5 +1,6 @@
 import { CALENDAR_ITEMS_MOCK } from "@/calendar/mocks";
-import type { IUser } from "@/calendar/interfaces";
+import type { IEvent, IUser } from "@/calendar/interfaces";
+import { getScheduleBindings } from "@/calendar/schedule-bindings";
 
 const YUQUE_BASE_URL = process.env.YUQUE_BASE_URL ?? "https://www.yuque.com/api/v2/";
 
@@ -20,6 +21,97 @@ type YuqueMember = {
   user?: YuqueUser;
   user_id?: number | string;
 };
+
+type IcsEvent = {
+  uid?: string;
+  summary?: string;
+  description?: string;
+  location?: string;
+  dtstart?: string;
+  dtend?: string;
+};
+
+function unfoldIcsLines(ics: string) {
+  return ics.replace(/\r?\n[ \t]/g, "").split(/\r?\n/);
+}
+
+function unescapeIcsText(value: string) {
+  return value.replace(/\\([\\;,n])/g, (_match, character: string) => (character === "n" ? "\n" : character));
+}
+
+function parseIcsDate(value: string) {
+  const date = value.replace(/[^0-9]/g, "");
+
+  if (date.length !== 8 && date.length !== 14) {
+    return null;
+  }
+
+  const year = Number(date.slice(0, 4));
+  const month = Number(date.slice(4, 6)) - 1;
+  const day = Number(date.slice(6, 8));
+  const hour = date.length === 14 ? Number(date.slice(8, 10)) : 0;
+  const minute = date.length === 14 ? Number(date.slice(10, 12)) : 0;
+  const second = date.length === 14 ? Number(date.slice(12, 14)) : 0;
+
+  return new Date(Date.UTC(year, month, day, hour, minute, second)).toISOString();
+}
+
+function getEventId(uid: string, index: number) {
+  let hash = 0;
+  for (const character of `${uid}-${index}`) {
+    hash = (hash * 31 + character.charCodeAt(0)) | 0;
+  }
+  return Math.abs(hash);
+}
+
+function parseIcsEvents(ics: string, user: IUser): IEvent[] {
+  const events: IcsEvent[] = [];
+  let currentEvent: IcsEvent | null = null;
+
+  for (const line of unfoldIcsLines(ics)) {
+    if (line === "BEGIN:VEVENT") {
+      currentEvent = {};
+      continue;
+    }
+
+    if (line === "END:VEVENT") {
+      if (currentEvent) events.push(currentEvent);
+      currentEvent = null;
+      continue;
+    }
+
+    if (!currentEvent) continue;
+    const separatorIndex = line.indexOf(":");
+    if (separatorIndex < 0) continue;
+
+    const property = line.slice(0, separatorIndex).split(";")[0].toLowerCase();
+    const value = unescapeIcsText(line.slice(separatorIndex + 1));
+    if (property === "uid") currentEvent.uid = value;
+    if (property === "summary") currentEvent.summary = value;
+    if (property === "description") currentEvent.description = value;
+    if (property === "location") currentEvent.location = value;
+    if (property === "dtstart") currentEvent.dtstart = value;
+    if (property === "dtend") currentEvent.dtend = value;
+  }
+
+  return events.flatMap((event, index) => {
+    const startDate = event.dtstart ? parseIcsDate(event.dtstart) : null;
+    const endDate = event.dtend ? parseIcsDate(event.dtend) : null;
+
+    if (!startDate || !endDate || !event.summary) return [];
+
+    const details = [event.description, event.location].filter(Boolean).join("\n\n");
+    return [{
+      id: getEventId(event.uid ?? "nju-event", index),
+      startDate,
+      endDate,
+      title: event.summary,
+      color: "blue",
+      description: details,
+      user,
+    }];
+  });
+}
 
 function normalizeAvatarUrl(avatar: string | null | undefined) {
   if (!avatar) {
@@ -65,10 +157,22 @@ async function getYuque<T>(endpoint: string, params?: Record<string, string>) {
 }
 
 export const getEvents = async () => {
-  // TO DO: implement this
-  // Increase the delay to better see the loading state
-  // await new Promise(resolve => setTimeout(resolve, 800));
-  return CALENDAR_ITEMS_MOCK;
+  const bindings = getScheduleBindings();
+  if (bindings.length === 0) return CALENDAR_ITEMS_MOCK;
+
+  const events = await Promise.all(
+    bindings.map(async binding => {
+      try {
+        const response = await fetch(binding.icsUrl.replace(/^webcal:/, "https:"), { cache: "no-store" });
+        if (!response.ok) return [];
+        return parseIcsEvents(await response.text(), binding.user);
+      } catch (_error) {
+        return [];
+      }
+    }),
+  );
+
+  return events.flat();
 };
 
 export const getUsers = async () => {

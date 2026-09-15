@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { UserSelect } from "@/calendar/components/header/user-select";
 import { TodayButton } from "@/calendar/components/header/today-button";
 import { DateNavigator } from "@/calendar/components/header/date-navigator";
-import { AddEventDialog } from "@/calendar/components/dialogs/add-event-dialog";
+import { ScheduleLinkDialog } from "@/calendar/components/dialogs/schedule-link-dialog";
 
 import type { IEvent } from "@/calendar/interfaces";
 import type { TCalendarView } from "@/calendar/types";
@@ -85,12 +85,12 @@ export function CalendarHeader({ view, events }: IProps) {
           <UserSelect />
         </div>
 
-        <AddEventDialog>
+        <ScheduleLinkDialog>
           <Button className="w-full sm:w-auto">
             <Plus />
-            Add Event
+            获取课表链接
           </Button>
-        </AddEventDialog>
+        </ScheduleLinkDialog>
       </div>
     </div>
   );
