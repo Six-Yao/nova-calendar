@@ -12,6 +12,8 @@ import { getTheme } from "@/cookies/get";
 
 import type { Metadata, Viewport } from "next";
 
+import SakanaWidgetBox from "@/components/sakana-widget";
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -33,6 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Header />
         <Analytics />
         {children}
+        <SakanaWidgetBox />
       </body>
     </html>
   );
