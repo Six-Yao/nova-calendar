@@ -99,6 +99,18 @@ npm run turbo
 
 4. Open your browser and navigate to `http://localhost:3000` to view the application.
 
+### Yuque members
+
+The calendar's user selector loads active members from Yuque. Create a `.env.local` file in this directory:
+
+```bash
+YUQUE_TOKEN=your-yuque-token
+YUQUE_GROUP_ID=your-yuque-group-id
+YUQUE_BASE_URL=https://www.yuque.com/api/v2/
+```
+
+`YUQUE_GROUP_ID` is optional when the token's current user ID is also the team ID. The member endpoint is requested server-side, so the token is not exposed to the browser.
+
 ## Project structure
 
 The project structure is organized as follows:
