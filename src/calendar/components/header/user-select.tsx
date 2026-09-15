@@ -1,46 +1,66 @@
+import { useState } from "react";
+
 import { useCalendar } from "@/calendar/contexts/calendar-context";
 
-import { AvatarGroup } from "@/components/ui/avatar-group";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function UserSelect() {
-  const { users, selectedUserId, setSelectedUserId } = useCalendar();
+  const { users, selectedUserIds, setSelectedUserIds } = useCalendar();
+  const [searchQuery, setSearchQuery] = useState("");
+  const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+  const filteredUsers = users
+    .filter(user => user.name.toLocaleLowerCase().includes(normalizedQuery))
+    .sort((firstUser, secondUser) => Number(selectedUserIds.includes(secondUser.id)) - Number(selectedUserIds.includes(firstUser.id)));
+  const selectedUserNames = users.filter(user => selectedUserIds.includes(user.id)).map(user => user.name);
+
+  const toggleUser = (userId: string) => {
+    setSelectedUserIds(selectedUserIds.includes(userId) ? selectedUserIds.filter(id => id !== userId) : [...selectedUserIds, userId]);
+  };
 
   return (
-    <Select value={selectedUserId} onValueChange={setSelectedUserId}>
-      <SelectTrigger className="flex-1 md:w-48">
-        <SelectValue />
-      </SelectTrigger>
+    <Popover
+      onOpenChange={open => {
+        if (!open) setSearchQuery("");
+      }}
+    >
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="flex-1 justify-between md:w-48">
+          <span className="truncate">{selectedUserNames.length > 0 ? selectedUserNames.join(", ") : "Select members"}</span>
+        </Button>
+      </PopoverTrigger>
 
-      <SelectContent align="end">
-        <SelectItem value="all">
-          <div className="flex items-center gap-1">
-            <AvatarGroup max={2}>
-              {users.map(user => (
-                <Avatar key={user.id} className="size-6 text-xxs">
-                  <AvatarImage src={user.picturePath ?? undefined} alt={user.name} />
-                  <AvatarFallback className="text-xxs">{user.name[0]}</AvatarFallback>
-                </Avatar>
-              ))}
-            </AvatarGroup>
-            All
-          </div>
-        </SelectItem>
+      <PopoverContent align="end" className="w-64 p-2">
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={event => setSearchQuery(event.target.value)}
+          placeholder="Search members"
+          aria-label="Search members"
+          className="mb-1 h-9 w-full rounded-sm border border-input bg-background px-2 text-sm outline-none focus:ring-1 focus:ring-ring"
+        />
 
-        {users.map(user => (
-          <SelectItem key={user.id} value={user.id} className="flex-1">
-            <div className="flex items-center gap-2">
-              <Avatar key={user.id} className="size-6">
+        <div className="max-h-64 overflow-y-auto">
+          {filteredUsers.map(user => (
+            <label key={user.id} className="flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent">
+              <input
+                type="checkbox"
+                checked={selectedUserIds.includes(user.id)}
+                onChange={() => toggleUser(user.id)}
+                className="size-4 accent-primary"
+              />
+              <Avatar className="size-6">
                 <AvatarImage src={user.picturePath ?? undefined} alt={user.name} />
                 <AvatarFallback className="text-xxs">{user.name[0]}</AvatarFallback>
               </Avatar>
+              <span className="truncate">{user.name}</span>
+            </label>
+          ))}
 
-              <p className="truncate">{user.name}</p>
-            </div>
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+          {filteredUsers.length === 0 && <p className="px-2 py-1.5 text-sm text-muted-foreground">No members found</p>}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
