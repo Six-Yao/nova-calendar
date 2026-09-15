@@ -9,8 +9,8 @@ import type { TBadgeVariant, TVisibleHours, TWorkingHours } from "@/calendar/typ
 interface ICalendarContext {
   selectedDate: Date;
   setSelectedDate: (date: Date | undefined) => void;
-  selectedUserId: IUser["id"] | "all";
-  setSelectedUserId: (userId: IUser["id"] | "all") => void;
+  selectedUserId: IUser["id"] | null;
+  setSelectedUserId: (userId: IUser["id"]) => void;
   badgeVariant: TBadgeVariant;
   setBadgeVariant: (variant: TBadgeVariant) => void;
   users: IUser[];
@@ -42,7 +42,7 @@ export function CalendarProvider({ children, users, events }: { children: React.
   const [workingHours, setWorkingHours] = useState<TWorkingHours>(WORKING_HOURS);
 
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedUserId, setSelectedUserId] = useState<IUser["id"] | "all">("all");
+  const [selectedUserId, setSelectedUserId] = useState<IUser["id"] | null>(null);
 
   // This localEvents doesn't need to exists in a real scenario.
   // It's used here just to simulate the update of the events.
