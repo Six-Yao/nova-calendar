@@ -1,5 +1,6 @@
 import { CALENDAR_ITEMS_MOCK } from "@/calendar/mocks";
 import type { IEvent, IUser } from "@/calendar/interfaces";
+import type { TEventColor } from "@/calendar/types";
 import { getScheduleBindings } from "@/calendar/schedule-bindings";
 
 const YUQUE_BASE_URL = process.env.YUQUE_BASE_URL ?? "https://www.yuque.com/api/v2/";
@@ -30,6 +31,18 @@ type IcsEvent = {
   dtstart?: string;
   dtend?: string;
 };
+
+const MEMBER_COLORS: TEventColor[] = ["blue", "green", "red", "yellow", "purple", "orange", "gray"];
+
+function applyMemberColors(events: IEvent[]) {
+  const memberColors = new Map(
+    Array.from(new Set(events.map(event => event.user.id)))
+      .sort()
+      .map((userId, index) => [userId, MEMBER_COLORS[index % MEMBER_COLORS.length]] as const),
+  );
+
+  return events.map(event => ({ ...event, color: memberColors.get(event.user.id) ?? MEMBER_COLORS[0] }));
+}
 
 function unfoldIcsLines(ics: string) {
   return ics.replace(/\r?\n[ \t]/g, "").split(/\r?\n/);
@@ -64,7 +77,7 @@ function getEventId(uid: string, index: number) {
   return Math.abs(hash);
 }
 
-function parseIcsEvents(ics: string, user: IUser): IEvent[] {
+function parseIcsEvents(ics: string, user: IUser, color: TEventColor): IEvent[] {
   const events: IcsEvent[] = [];
   let currentEvent: IcsEvent | null = null;
 
@@ -106,7 +119,7 @@ function parseIcsEvents(ics: string, user: IUser): IEvent[] {
       startDate,
       endDate,
       title: event.summary,
-      color: "blue",
+      color,
       description: details,
       user,
     }];
@@ -158,21 +171,27 @@ async function getYuque<T>(endpoint: string, params?: Record<string, string>) {
 
 export const getEvents = async () => {
   const bindings = getScheduleBindings();
-  if (bindings.length === 0) return CALENDAR_ITEMS_MOCK;
+  if (bindings.length === 0) return applyMemberColors(CALENDAR_ITEMS_MOCK);
+
+  const memberColors = new Map(
+    [...bindings]
+      .sort((first, second) => first.user.id.localeCompare(second.user.id))
+      .map((binding, index) => [binding.user.id, MEMBER_COLORS[index % MEMBER_COLORS.length]] as const),
+  );
 
   const events = await Promise.all(
     bindings.map(async binding => {
       try {
         const response = await fetch(binding.icsUrl.replace(/^webcal:/, "https:"), { cache: "no-store" });
         if (!response.ok) return [];
-        return parseIcsEvents(await response.text(), binding.user);
+        return parseIcsEvents(await response.text(), binding.user, memberColors.get(binding.user.id) ?? MEMBER_COLORS[0]);
       } catch (_error) {
         return [];
       }
     }),
   );
 
-  return events.flat();
+  return applyMemberColors(events.flat());
 };
 
 export const getUsers = async () => {

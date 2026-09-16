@@ -25,16 +25,16 @@ interface ICalendarContext {
 const CalendarContext = createContext({} as ICalendarContext);
 
 const WORKING_HOURS = {
-  0: { from: 0, to: 0 },
-  1: { from: 8, to: 17 },
-  2: { from: 8, to: 17 },
-  3: { from: 8, to: 17 },
-  4: { from: 8, to: 17 },
-  5: { from: 8, to: 17 },
-  6: { from: 8, to: 12 },
+  0: { from: 0, to: 24 },
+  1: { from: 0, to: 24 },
+  2: { from: 0, to: 24 },
+  3: { from: 0, to: 24 },
+  4: { from: 0, to: 24 },
+  5: { from: 0, to: 24 },
+  6: { from: 0, to: 24 },
 };
 
-const VISIBLE_HOURS = { from: 7, to: 18 };
+const VISIBLE_HOURS = { from: 8, to: 18 };
 
 export function CalendarProvider({ children, users, events }: { children: React.ReactNode; users: IUser[]; events: IEvent[] }) {
   const [badgeVariant, setBadgeVariant] = useState<TBadgeVariant>("colored");
