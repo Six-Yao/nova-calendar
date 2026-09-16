@@ -1394,6 +1394,12 @@ function EventBlock({
           )}
 
           <p className="truncate font-semibold">{event.title}</p>
+          
+          {durationInMinutes > 25 && (
+            <p>
+              {format(start, "h:mm a")} - {format(end, "h:mm a")}
+            </p>
+          )}
         </div>
       </div>
     </DraggableEvent>

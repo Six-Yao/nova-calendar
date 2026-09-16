@@ -78,12 +78,6 @@ export function EventBlock({ event, className }: IProps) {
 
             <p className="truncate font-semibold">{event.title}</p>
           </div>
-
-          {durationInMinutes > 25 && (
-            <p>
-              {format(start, "h:mm a")} - {format(end, "h:mm a")}
-            </p>
-          )}
         </div>
       </EventDetailsDialog>
     </DraggableEvent>
