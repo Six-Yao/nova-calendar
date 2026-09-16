@@ -63,7 +63,7 @@ export function AddEventDialog({ children, startDate, startTime }: IProps) {
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Event</DialogTitle>
+          <DialogTitle>增加课时</DialogTitle>
           <DialogDescription>
             <AlertTriangle className="mr-1 inline-block size-4 text-yellow-500" />
             This form is for demonstration purposes only and will not actually create an event. In a real application, submit the form to the backend API to
@@ -78,7 +78,7 @@ export function AddEventDialog({ children, startDate, startTime }: IProps) {
               name="user"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>Responsible</FormLabel>
+                  <FormLabel>姓名</FormLabel>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger data-invalid={fieldState.invalid}>
@@ -111,7 +111,7 @@ export function AddEventDialog({ children, startDate, startTime }: IProps) {
               name="title"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel htmlFor="title">Title</FormLabel>
+                  <FormLabel htmlFor="title">标题</FormLabel>
 
                   <FormControl>
                     <Input id="title" placeholder="Enter a title" data-invalid={fieldState.invalid} {...field} />
@@ -128,7 +128,7 @@ export function AddEventDialog({ children, startDate, startTime }: IProps) {
                 name="startDate"
                 render={({ field, fieldState }) => (
                   <FormItem className="flex-1">
-                    <FormLabel htmlFor="startDate">Start Date</FormLabel>
+                    <FormLabel htmlFor="startDate">开始时间</FormLabel>
 
                     <FormControl>
                       <SingleDayPicker
@@ -150,7 +150,7 @@ export function AddEventDialog({ children, startDate, startTime }: IProps) {
                 name="startTime"
                 render={({ field, fieldState }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Start Time</FormLabel>
+                    <FormLabel>&nbsp;</FormLabel>
 
                     <FormControl>
                       <TimeInput value={field.value as TimeValue} onChange={field.onChange} hourCycle={12} data-invalid={fieldState.invalid} />
@@ -168,7 +168,7 @@ export function AddEventDialog({ children, startDate, startTime }: IProps) {
                 name="endDate"
                 render={({ field, fieldState }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>End Date</FormLabel>
+                    <FormLabel>结束时间</FormLabel>
                     <FormControl>
                       <SingleDayPicker
                         value={field.value}
@@ -187,7 +187,7 @@ export function AddEventDialog({ children, startDate, startTime }: IProps) {
                 name="endTime"
                 render={({ field, fieldState }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>End Time</FormLabel>
+                    <FormLabel>&nbsp;</FormLabel>
 
                     <FormControl>
                       <TimeInput value={field.value as TimeValue} onChange={field.onChange} hourCycle={12} data-invalid={fieldState.invalid} />
@@ -204,7 +204,7 @@ export function AddEventDialog({ children, startDate, startTime }: IProps) {
               name="color"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>Color</FormLabel>
+                  <FormLabel>颜色</FormLabel>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger data-invalid={fieldState.invalid}>
@@ -273,7 +273,7 @@ export function AddEventDialog({ children, startDate, startTime }: IProps) {
               name="description"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>描述</FormLabel>
 
                   <FormControl>
                     <Textarea {...field} value={field.value} data-invalid={fieldState.invalid} />

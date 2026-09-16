@@ -18,7 +18,7 @@ import { CalendarViewSwitcher } from "@/components/demo/calendar-view-switcher";
 import { AddEventDialog } from "@/components/demo/add-event-dialog";
 import { EventDetailsDialog } from "@/components/demo/event-details-dialog";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Heart } from "lucide-react";
 
 export function CalendarDemo({
   view,

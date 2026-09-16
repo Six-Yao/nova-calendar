@@ -27,7 +27,7 @@ export function UserSelect() {
     >
       <PopoverTrigger asChild>
         <Button variant="outline" className="flex-1 justify-between md:w-48">
-          <span className="truncate">{selectedUserNames.length > 0 ? selectedUserNames.join(", ") : "Select members"}</span>
+          <span className="truncate">{selectedUserNames.length > 0 ? selectedUserNames.join(", ") : "选择用户"}</span>
         </Button>
       </PopoverTrigger>
 
@@ -36,8 +36,8 @@ export function UserSelect() {
           type="search"
           value={searchQuery}
           onChange={event => setSearchQuery(event.target.value)}
-          placeholder="Search members"
-          aria-label="Search members"
+          placeholder="搜索"
+          aria-label="搜索"
           className="mb-1 h-9 w-full rounded-sm border border-input bg-background px-2 text-sm outline-none focus:ring-1 focus:ring-ring"
         />
 

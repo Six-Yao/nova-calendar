@@ -32,7 +32,7 @@ export function EventDetailsDialog({ event, open, onOpenChange, users }: IProps)
             <div className="flex items-start gap-2">
               <User className="mt-1 size-4 shrink-0" />
               <div>
-                <p className="text-sm font-medium">Responsible</p>
+                <p className="text-sm font-medium">姓名</p>
                 <p className="text-sm text-muted-foreground">{event.user.name}</p>
               </div>
             </div>
@@ -40,7 +40,7 @@ export function EventDetailsDialog({ event, open, onOpenChange, users }: IProps)
             <div className="flex items-start gap-2">
               <Calendar className="mt-1 size-4 shrink-0" />
               <div>
-                <p className="text-sm font-medium">Start Date</p>
+                <p className="text-sm font-medium">开始时间</p>
                 <p className="text-sm text-muted-foreground">{format(startDate, "MMM d, yyyy h:mm a")}</p>
               </div>
             </div>
@@ -48,7 +48,7 @@ export function EventDetailsDialog({ event, open, onOpenChange, users }: IProps)
             <div className="flex items-start gap-2">
               <Clock className="mt-1 size-4 shrink-0" />
               <div>
-                <p className="text-sm font-medium">End Date</p>
+                <p className="text-sm font-medium">结束时间</p>
                 <p className="text-sm text-muted-foreground">{format(endDate, "MMM d, yyyy h:mm a")}</p>
               </div>
             </div>
@@ -56,7 +56,7 @@ export function EventDetailsDialog({ event, open, onOpenChange, users }: IProps)
             <div className="flex items-start gap-2">
               <Text className="mt-1 size-4 shrink-0" />
               <div>
-                <p className="text-sm font-medium">Description</p>
+                <p className="text-sm font-medium">描述</p>
                 <p className="text-sm text-muted-foreground">{event.description}</p>
               </div>
             </div>

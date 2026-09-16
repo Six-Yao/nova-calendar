@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, ArrowUpRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -85,7 +86,15 @@ export function ScheduleLinkDialog({ children }: IProps) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>获取课表链接</DialogTitle>
-          <DialogDescription>通过 schedule 登录后生成可订阅的 ICS 日历链接。</DialogDescription>
+          <DialogDescription>通过&nbsp;
+            <Link
+                href="https://github.com/SuperKenVery/nju-schedule-ics"
+                target="_blank"
+                className="inline-flex gap-0.5 text-sm underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            >
+                nju-schedule-ics
+              <ArrowUpRight size={12} className="text-foreground" />
+            </Link>登录后生成可订阅的 ICS 日历链接。</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={submit} className="grid gap-4">
@@ -102,8 +111,8 @@ export function ScheduleLinkDialog({ children }: IProps) {
                   type="search"
                   value={searchQuery}
                   onChange={event => setSearchQuery(event.target.value)}
-                  placeholder="Search members"
-                  aria-label="Search members"
+                  placeholder="搜索"
+                  aria-label="搜索"
                   className="mb-1 h-9 w-full rounded-sm border border-input bg-background px-2 text-sm outline-none focus:ring-1 focus:ring-ring"
                 />
                 <div className="max-h-64 overflow-y-auto">

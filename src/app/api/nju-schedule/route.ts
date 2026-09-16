@@ -4,7 +4,7 @@ import { saveScheduleBinding } from "@/calendar/schedule-bindings";
 
 const configuredScheduleBaseUrl = process.env.NJU_SCHEDULE_BASE_URL;
 if (!configuredScheduleBaseUrl) {
-  throw new Error("NJU_SCHEDULE_BASE_URL is required");
+  throw new Error("NJU_SCHEDULE_BASE_URL不能为空");
 }
 
 const SCHEDULE_BASE_URL = configuredScheduleBaseUrl.replace(/\/$/, "");

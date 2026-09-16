@@ -3,13 +3,13 @@ import { z } from "zod";
 export const eventSchema = z
   .object({
     user: z.string(),
-    title: z.string().min(1, "Title is required"),
-    description: z.string().min(1, "Description is required"),
-    startDate: z.date({ required_error: "Start date is required" }),
-    startTime: z.object({ hour: z.number(), minute: z.number() }, { required_error: "Start time is required" }),
-    endDate: z.date({ required_error: "End date is required" }),
-    endTime: z.object({ hour: z.number(), minute: z.number() }, { required_error: "End time is required" }),
-    color: z.enum(["blue", "green", "red", "yellow", "purple", "orange", "gray"], { required_error: "Color is required" }),
+    title: z.string().min(1, "标题不能为空"),
+    description: z.string().min(1, "描述不能为空"),
+    startDate: z.date({ required_error: "开始时间不能为空" }),
+    startTime: z.object({ hour: z.number(), minute: z.number() }, { required_error: "Start time不能为空" }),
+    endDate: z.date({ required_error: "结束时间不能为空" }),
+    endTime: z.object({ hour: z.number(), minute: z.number() }, { required_error: "End time不能为空" }),
+    color: z.enum(["blue", "green", "red", "yellow", "purple", "orange", "gray"], { required_error: "Color不能为空" }),
   })
   .refine(
     data => {
@@ -22,7 +22,7 @@ export const eventSchema = z
       return startDateTime < endDateTime;
     },
     {
-      message: "Start date cannot be after end date",
+      message: "开始时间不能早于结束时间",
       path: ["startDate"],
     }
   );
